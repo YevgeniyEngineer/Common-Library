@@ -1,0 +1,5 @@
+/home/yevgeniy/Documents/GitHub/Common-Library/build/CMakeFiles/common_library.dir
+/home/yevgeniy/Documents/GitHub/Common-Library/build/CMakeFiles/example_spsc_queue.dir
+/home/yevgeniy/Documents/GitHub/Common-Library/build/CMakeFiles/example_ts_queue.dir
+/home/yevgeniy/Documents/GitHub/Common-Library/build/CMakeFiles/edit_cache.dir
+/home/yevgeniy/Documents/GitHub/Common-Library/build/CMakeFiles/rebuild_cache.dir
