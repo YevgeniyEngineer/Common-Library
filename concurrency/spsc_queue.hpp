@@ -21,7 +21,7 @@ template <typename T> class SPSCQueue final
     SPSCQueue(const SPSCQueue &other) = delete;
     SPSCQueue &operator=(const SPSCQueue &other) = delete;
 
-    bool push(const T &value)
+    bool push(const T &value) noexcept
     {
         const auto current_tail = tail_.load(std::memory_order_relaxed);
         const auto next_tail = increment(current_tail);
@@ -34,7 +34,7 @@ template <typename T> class SPSCQueue final
         return false;
     }
 
-    bool pop(T &value)
+    bool pop(T &value) noexcept
     {
         const auto current_head = head_.load(std::memory_order_relaxed);
         if (current_head == tail_.load(std::memory_order_acquire))
@@ -47,7 +47,7 @@ template <typename T> class SPSCQueue final
     }
 
   private:
-    std::size_t increment(std::size_t idx) const
+    std::size_t increment(std::size_t idx) const noexcept
     {
         return (idx + 1) % capacity_;
     }

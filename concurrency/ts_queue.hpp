@@ -53,7 +53,7 @@ template <typename T> class TSQueue final
 
     bool empty() const
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<std::mutex> lock{mutex_};
         if (destructing_)
         {
             return true;
@@ -63,7 +63,7 @@ template <typename T> class TSQueue final
 
     ~TSQueue()
     {
-        std::lock_guard<std::mutex> lock(mutex_);
+        std::lock_guard<std::mutex> lock{mutex_};
         destructing_.store(true);
         cv_.notify_all();
     }
