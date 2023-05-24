@@ -13,9 +13,13 @@ template <typename T> class SPSCQueue final
     const std::size_t capacity_;
 
   public:
-    SPSCQueue(std::size_t size) : buffer_(size), head_(0), tail_(0), capacity_(size)
+    explicit SPSCQueue(std::size_t size) : buffer_(size), head_(0), tail_(0), capacity_(size)
     {
     }
+
+    SPSCQueue() = delete;
+    SPSCQueue(const SPSCQueue &other) = delete;
+    SPSCQueue &operator=(const SPSCQueue &other) = delete;
 
     bool push(const T &value)
     {

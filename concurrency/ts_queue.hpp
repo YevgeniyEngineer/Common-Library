@@ -56,7 +56,7 @@ template <typename T> class TSQueue final
         std::lock_guard<std::mutex> lock(mutex_);
         if (destructing_)
         {
-            return (true);
+            return true;
         }
         return queue_.empty();
     }
