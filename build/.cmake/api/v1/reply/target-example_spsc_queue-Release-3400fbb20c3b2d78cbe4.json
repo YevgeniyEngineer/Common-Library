@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "example_ts_queue"
+			"path" : "example_spsc_queue"
 		}
 	],
 	"backtrace" : 1,
@@ -43,6 +43,9 @@
 			[
 				{
 					"fragment" : "-O3 -DNDEBUG"
+				},
+				{
+					"fragment" : "-std=gnu++17"
 				}
 			],
 			"includes" : 
@@ -53,6 +56,14 @@
 				}
 			],
 			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "17"
+			},
 			"sourceIndexes" : 
 			[
 				0
@@ -66,7 +77,7 @@
 			"id" : "common_library::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "example_ts_queue::@6890427a1f51a3e7e1df",
+	"id" : "example_spsc_queue::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -82,8 +93,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "example_ts_queue",
-	"nameOnDisk" : "example_ts_queue",
+	"name" : "example_spsc_queue",
+	"nameOnDisk" : "example_spsc_queue",
 	"paths" : 
 	{
 		"build" : ".",
@@ -104,7 +115,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "examples/ts_queue.cpp",
+			"path" : "examples/spsc_queue.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.18)
 
 project(common_library)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 add_library(${PROJECT_NAME}
     INTERFACE
     concurrency/ts_queue.hpp

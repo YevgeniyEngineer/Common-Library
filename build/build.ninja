@@ -57,7 +57,7 @@ build cmake_object_order_depends_target_example_spsc_queue: phony || common_libr
 
 build CMakeFiles/example_spsc_queue.dir/examples/spsc_queue.cpp.o: CXX_COMPILER__example_spsc_queue_Release /home/yevgeniy/Documents/GitHub/Common-Library/examples/spsc_queue.cpp || cmake_object_order_depends_target_example_spsc_queue
   DEP_FILE = CMakeFiles/example_spsc_queue.dir/examples/spsc_queue.cpp.o.d
-  FLAGS = -O3 -DNDEBUG
+  FLAGS = -O3 -DNDEBUG -std=gnu++17
   INCLUDES = -I/home/yevgeniy/Documents/GitHub/Common-Library
   OBJECT_DIR = CMakeFiles/example_spsc_queue.dir
   OBJECT_FILE_DIR = CMakeFiles/example_spsc_queue.dir/examples
@@ -89,7 +89,7 @@ build cmake_object_order_depends_target_example_ts_queue: phony || common_librar
 
 build CMakeFiles/example_ts_queue.dir/examples/ts_queue.cpp.o: CXX_COMPILER__example_ts_queue_Release /home/yevgeniy/Documents/GitHub/Common-Library/examples/ts_queue.cpp || cmake_object_order_depends_target_example_ts_queue
   DEP_FILE = CMakeFiles/example_ts_queue.dir/examples/ts_queue.cpp.o.d
-  FLAGS = -O3 -DNDEBUG
+  FLAGS = -O3 -DNDEBUG -std=gnu++17
   INCLUDES = -I/home/yevgeniy/Documents/GitHub/Common-Library
   OBJECT_DIR = CMakeFiles/example_ts_queue.dir
   OBJECT_FILE_DIR = CMakeFiles/example_ts_queue.dir/examples

@@ -3,6 +3,7 @@
 #include <mutex>
 #include <optional>
 #include <queue>
+#include <utility>
 
 namespace common_library
 {
@@ -21,7 +22,7 @@ template <typename T> class TSQueue final
   public:
     TSQueue &operator=(const TSQueue &other) = delete;
 
-    static TSQueue<T> &getInstance()
+    [[nodiscard]] static TSQueue<T> &getInstance()
     {
         static TSQueue<T> instance;
         return instance;
@@ -51,7 +52,7 @@ template <typename T> class TSQueue final
         return value;
     }
 
-    bool empty() const
+    [[nodiscard]] bool empty() const
     {
         std::lock_guard<std::mutex> lock{mutex_};
         if (destructing_)

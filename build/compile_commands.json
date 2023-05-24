@@ -1,12 +1,12 @@
 [
 {
   "directory": "/home/yevgeniy/Documents/GitHub/Common-Library/build",
-  "command": "/usr/bin/g++ -I/home/yevgeniy/Documents/GitHub/Common-Library -O3 -DNDEBUG -o CMakeFiles/example_spsc_queue.dir/examples/spsc_queue.cpp.o -c /home/yevgeniy/Documents/GitHub/Common-Library/examples/spsc_queue.cpp",
+  "command": "/usr/bin/g++ -I/home/yevgeniy/Documents/GitHub/Common-Library -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/example_spsc_queue.dir/examples/spsc_queue.cpp.o -c /home/yevgeniy/Documents/GitHub/Common-Library/examples/spsc_queue.cpp",
   "file": "/home/yevgeniy/Documents/GitHub/Common-Library/examples/spsc_queue.cpp"
 },
 {
   "directory": "/home/yevgeniy/Documents/GitHub/Common-Library/build",
-  "command": "/usr/bin/g++ -I/home/yevgeniy/Documents/GitHub/Common-Library -O3 -DNDEBUG -o CMakeFiles/example_ts_queue.dir/examples/ts_queue.cpp.o -c /home/yevgeniy/Documents/GitHub/Common-Library/examples/ts_queue.cpp",
+  "command": "/usr/bin/g++ -I/home/yevgeniy/Documents/GitHub/Common-Library -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles/example_ts_queue.dir/examples/ts_queue.cpp.o -c /home/yevgeniy/Documents/GitHub/Common-Library/examples/ts_queue.cpp",
   "file": "/home/yevgeniy/Documents/GitHub/Common-Library/examples/ts_queue.cpp"
 }
 ]
