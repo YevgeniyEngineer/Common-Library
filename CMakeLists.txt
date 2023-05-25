@@ -21,3 +21,6 @@ target_link_libraries(example_spsc_queue PRIVATE common_library)
 
 add_executable(example_ts_queue examples/ts_queue.cpp)
 target_link_libraries(example_ts_queue PRIVATE common_library)
+
+add_executable(example_lock_free_queue examples/lock_free_queue.cpp)
+target_link_libraries(example_lock_free_queue PRIVATE common_library)
