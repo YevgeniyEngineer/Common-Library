@@ -9,11 +9,18 @@ add_library(${PROJECT_NAME}
     INTERFACE
     concurrency/ts_queue.hpp
     concurrency/spsc_queue.hpp
+    concurrency/lock_free_queue.hpp
+    concurrency/ts_logger.hpp
 )
 
 target_include_directories(${PROJECT_NAME}
     INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+    INTERFACE
+    -latomic
 )
 
 add_executable(example_spsc_queue examples/spsc_queue.cpp)

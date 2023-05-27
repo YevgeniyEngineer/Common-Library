@@ -38,6 +38,7 @@ template <typename T> class LockFreeQueue
     LockFreeQueue()
     {
         Node *new_node = new Node{};
+        new_node->next = nullptr;
 
         head_.store(new_node, std::memory_order_relaxed);
         tail_.store(new_node, std::memory_order_relaxed);
@@ -46,9 +47,9 @@ template <typename T> class LockFreeQueue
     // Destructor deletes all Nodes in the queue.
     ~LockFreeQueue()
     {
-        while (const Node *old_head = head_.load(std::memory_order_relaxed))
+        while (Node *old_head = head_.load(std::memory_order_acquire))
         {
-            head_.store(old_head->next, std::memory_order_relaxed);
+            head_.store(old_head->next, std::memory_order_release);
             delete old_head;
         }
     }
@@ -57,14 +58,14 @@ template <typename T> class LockFreeQueue
     std::unique_ptr<T> pop()
     {
         // Save current head to old head.
-        Node *old_head = head_.load(std::memory_order_relaxed);
+        Node *old_head = head_.load(std::memory_order_acquire);
 
         // An infinite loop that tries to pop the head Node.
         // It only exits the loop when it successfully pops the Node.
         for (;;)
         {
             // Save the tail and next Node after the head.
-            Node *tail = tail_.load(std::memory_order_relaxed);
+            Node *tail = tail_.load(std::memory_order_acquire);
             Node *next = old_head->next.load(std::memory_order_acquire);
 
             // If the head hasn't changed while saving tail and next.
@@ -87,17 +88,21 @@ template <typename T> class LockFreeQueue
                 // We create a unique_ptr to return the data.
                 else
                 {
-                    auto result = std::make_unique<T>(next->data);
+                    T data = next->data;
 
                     // Try to move the head to the next Node.
                     // If successful, delete the old head Node and return the data.
-                    if (head_.compare_exchange_weak(old_head, next, std::memory_order_release,
-                                                    std::memory_order_relaxed))
+                    if (head_.compare_exchange_strong(old_head, next, std::memory_order_release,
+                                                      std::memory_order_relaxed))
                     {
                         delete old_head;
-                        return result;
+                        return std::make_unique<T>(data);
                     }
                 }
+            }
+            else
+            {
+                old_head = head_.load(std::memory_order_acquire);
             }
         }
     }
@@ -113,7 +118,7 @@ template <typename T> class LockFreeQueue
         for (;;)
         {
             // Refresh the tail value in case it has been changed by another thread.
-            Node *tail = tail_.load(std::memory_order_relaxed);
+            Node *tail = tail_.load(std::memory_order_acquire);
 
             Node *expected{nullptr};
 
@@ -129,6 +134,12 @@ template <typename T> class LockFreeQueue
                 tail_.compare_exchange_weak(tail, new_node, std::memory_order_release, std::memory_order_relaxed);
                 break;
             }
+            else
+            {
+                // If we failed to set the next pointer of the tail, another thread has already
+                // added a node, so we should try to help by advancing the tail
+                tail_.compare_exchange_weak(tail, expected, std::memory_order_release, std::memory_order_relaxed);
+            }
         }
     }
 
@@ -136,9 +147,7 @@ template <typename T> class LockFreeQueue
     bool empty()
     {
         std::atomic_thread_fence(std::memory_order_acquire); // Ensure we get the latest values
-        Node *tail = tail_.load(std::memory_order_relaxed);
-        Node *next = tail->next.load(std::memory_order_relaxed);
-        return (head_.load(std::memory_order_relaxed) == next);
+        return (head_.load(std::memory_order_relaxed)->next.load(std::memory_order_relaxed) == nullptr);
     }
 };
 } // namespace common_library
