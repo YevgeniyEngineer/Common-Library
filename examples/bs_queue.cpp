@@ -1,14 +1,15 @@
-#include <concurrency/lock_free_queue.hpp>
+#include <concurrency/bs_queue.hpp>
 #include <concurrency/ts_logger.hpp>
 
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <thread>
 #include <vector>
 
-using LockFreeQueueSharedPtr = std::shared_ptr<common_library::LockFreeQueue<int>>;
+using LockFreeQueueSharedPtr = std::shared_ptr<common_library::BSQueue<int>>;
 
 constexpr int TERMINATION_TOKEN = std::numeric_limits<int>::lowest();
 constexpr int NUM_CONSUMERS = 5;
@@ -24,12 +25,13 @@ void produce(LockFreeQueueSharedPtr queue)
 
     for (int i = 0; i < 100; ++i)
     {
-        queue->push(i);
+        if (queue->tryPush(i))
+        {
+            logger.log("Producer thread ", std::this_thread::get_id(), " Value: ", i);
 
-        logger.log("Producer thread ", std::this_thread::get_id(), " Value: ", i);
-
-        // Simulate work
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            // Simulate work
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
     }
 
     number_of_active_producers.fetch_sub(1);
@@ -37,41 +39,38 @@ void produce(LockFreeQueueSharedPtr queue)
     {
         for (int i = 0; i < NUM_CONSUMERS; ++i)
         {
-            queue->push(TERMINATION_TOKEN);
-
-            logger.log("Producer thread ", std::this_thread::get_id(), " Termination token: ", TERMINATION_TOKEN);
+            if (queue->tryPush(TERMINATION_TOKEN))
+            {
+                logger.log("Producer thread ", std::this_thread::get_id(), " Termination token: ", TERMINATION_TOKEN);
+            }
         }
     }
 }
 
 void consume(LockFreeQueueSharedPtr queue)
 {
+    int val;
+
     while (true)
     {
-        auto val = queue->pop();
-
-        if (val == nullptr)
+        if (queue->tryPop(val))
         {
-            // If we received a nullptr, sleep for a bit to backoff
-            // std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            continue;
-        }
+            // Check for termination token.
+            if (val == TERMINATION_TOKEN)
+            {
+                break;
+            }
 
-        // Check for termination token.
-        if (*val == TERMINATION_TOKEN)
-        {
-            break;
+            // Note that due to thread scheduling, the logging might happen with some offset
+            // causing values to be printed out-of-order, despite logger being thread safe
+            logger.log("Consumer thread: ", std::this_thread::get_id(), " Value: ", val);
         }
-
-        // Note that due to thread scheduling, the logging might happen with some offset
-        // causing values to be printed out-of-order, despite logger being thread safe
-        logger.log("Consumer thread: ", std::this_thread::get_id(), " Value: ", *val);
     }
 }
 
 int main()
 {
-    auto queue = std::make_shared<common_library::LockFreeQueue<int>>();
+    auto queue = std::make_shared<common_library::BSQueue<int>>(std::numeric_limits<std::size_t>::max());
 
     // Start a producer thread and multiple consumer threads.
     std::vector<std::thread> producer_threads;

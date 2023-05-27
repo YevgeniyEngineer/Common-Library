@@ -11,6 +11,7 @@ add_library(${PROJECT_NAME}
     concurrency/spsc_queue.hpp
     concurrency/lock_free_queue.hpp
     concurrency/ts_logger.hpp
+    concurrency/bs_queue.hpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -31,3 +32,6 @@ target_link_libraries(example_ts_queue PRIVATE common_library)
 
 add_executable(example_lock_free_queue examples/lock_free_queue.cpp)
 target_link_libraries(example_lock_free_queue PRIVATE common_library)
+
+add_executable(example_bs_queue examples/bs_queue.cpp)
+target_link_libraries(example_bs_queue PRIVATE common_library)

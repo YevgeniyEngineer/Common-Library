@@ -76,6 +76,7 @@
         "variant": "cpp",
         "*.ipp": "cpp",
         "ciso646": "cpp",
-        "*.txx": "cpp"
+        "*.txx": "cpp",
+        "*.inc": "cpp"
     }
 }

@@ -19,29 +19,28 @@ template <typename T> class LockFreeQueue
         }
 
         T data;
-        std::atomic<Node *> next;
+        std::atomic<Node *> next{nullptr};
     };
 
     // Head and tail pointers to Nodes in the queue are kept as atomic.
     // This ensures that multiple threads can reliably know the current state of the queue.
-    std::atomic<Node *> head_;
-    std::atomic<Node *> tail_;
+    std::atomic<Node *> head_{nullptr};
+    std::atomic<Node *> tail_{nullptr};
 
   public:
     // The queue can't be copied or moved to prevent potential threading issues.
     LockFreeQueue(const LockFreeQueue &other) = delete;
     LockFreeQueue &operator=(const LockFreeQueue &other) = delete;
-    LockFreeQueue(LockFreeQueue &&) = delete;
-    LockFreeQueue &operator=(LockFreeQueue &&) = delete;
+    LockFreeQueue(LockFreeQueue &&) noexcept = delete;
+    LockFreeQueue &operator=(LockFreeQueue &&) noexcept = delete;
 
     // The constructor initializes an empty Node and sets both the head and tail to point to it.
     LockFreeQueue()
     {
         Node *new_node = new Node{};
-        new_node->next = nullptr;
 
-        head_.store(new_node, std::memory_order_relaxed);
-        tail_.store(new_node, std::memory_order_relaxed);
+        head_.store(new_node, std::memory_order_acquire);
+        tail_.store(new_node, std::memory_order_acquire);
     }
 
     // Destructor deletes all Nodes in the queue.
@@ -68,18 +67,18 @@ template <typename T> class LockFreeQueue
             Node *tail = tail_.load(std::memory_order_acquire);
             Node *next = old_head->next.load(std::memory_order_acquire);
 
+            // If there is no next Node, the queue is indeed empty and we return an empty pointer.
+            if (next == nullptr)
+            {
+                return nullptr;
+            }
+
             // If the head hasn't changed while saving tail and next.
             if (old_head == head_.load(std::memory_order_relaxed))
             {
                 // If head and tail are the same, it means the queue might be empty.
                 if (old_head == tail)
                 {
-                    // If there is no next Node, the queue is indeed empty and we return an empty shared_ptr.
-                    if (next == nullptr)
-                    {
-                        return nullptr;
-                    }
-
                     // If there is a next Node, it means another thread has pushed a new Node to the queue,
                     // so we help it by moving the tail to the next Node.
                     tail_.compare_exchange_weak(old_head, next, std::memory_order_release, std::memory_order_relaxed);
