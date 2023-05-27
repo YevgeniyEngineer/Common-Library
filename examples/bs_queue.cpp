@@ -23,15 +23,13 @@ void produce(LockFreeQueueSharedPtr queue)
 {
     ++number_of_active_producers;
 
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
-        if (queue->tryPush(i))
-        {
-            logger.log("Producer thread ", std::this_thread::get_id(), " Value: ", i);
+        queue->push(i);
+        logger.log("Producer thread ", std::this_thread::get_id(), " Value: ", i);
 
-            // Simulate work
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+        // Simulate work
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     number_of_active_producers.fetch_sub(1);
@@ -39,10 +37,8 @@ void produce(LockFreeQueueSharedPtr queue)
     {
         for (int i = 0; i < NUM_CONSUMERS; ++i)
         {
-            if (queue->tryPush(TERMINATION_TOKEN))
-            {
-                logger.log("Producer thread ", std::this_thread::get_id(), " Termination token: ", TERMINATION_TOKEN);
-            }
+            queue->push(TERMINATION_TOKEN);
+            logger.log("Producer thread ", std::this_thread::get_id(), " Termination token: ", TERMINATION_TOKEN);
         }
     }
 }

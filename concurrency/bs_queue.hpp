@@ -1,6 +1,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
+#include <limits>
 #include <mutex>
 #include <queue>
 
@@ -18,7 +19,8 @@ template <typename T> class BSQueue
     std::atomic_bool shutdown_;
 
   public:
-    explicit BSQueue(std::size_t max_size = 1) : max_size_(max_size), shutdown_(false)
+    explicit BSQueue(std::size_t max_size = std::numeric_limits<std::size_t>::max())
+        : max_size_(max_size), shutdown_(false)
     {
     }
 
@@ -100,6 +102,11 @@ template <typename T> class BSQueue
 
         queue_.push(item);
         data_available_.notify_one();
+    }
+
+    std::size_t maxSize() const
+    {
+        return max_size_;
     }
 };
 } // namespace common_library
