@@ -1,4 +1,4 @@
-#include <concurrency/spsc_queue.hpp>
+#include <common_library/concurrency/single_producer_single_consumer_queue.hpp>
 
 #include <chrono>
 #include <iostream>
@@ -6,9 +6,7 @@
 
 constexpr std::size_t QUEUE_SIZE = 100;
 
-using namespace common_library;
-
-void producer(SPSCQueue<int> &queue)
+void producer(common_library::concurrency::SingleProducerSingleConsumerQueue<int> &queue)
 {
     for (int i = 0; i < 100; ++i)
     {
@@ -19,7 +17,7 @@ void producer(SPSCQueue<int> &queue)
     }
 }
 
-void consumer(SPSCQueue<int> &queue)
+void consumer(common_library::concurrency::SingleProducerSingleConsumerQueue<int> &queue)
 {
     auto t1 = std::chrono::steady_clock::now();
 
@@ -39,7 +37,7 @@ void consumer(SPSCQueue<int> &queue)
 
 int main()
 {
-    SPSCQueue<int> queue(QUEUE_SIZE);
+    common_library::concurrency::SingleProducerSingleConsumerQueue<int> queue(QUEUE_SIZE);
 
     std::thread producer_thread(&producer, std::ref(queue));
     std::thread consumer_thread(&consumer, std::ref(queue));

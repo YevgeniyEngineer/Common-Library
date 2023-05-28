@@ -8,9 +8,9 @@
 #include <thread>
 #include <utility>
 
-namespace common_library
+namespace common_library::concurrency
 {
-class TSLogger final
+class ThreadSafeLogger final
 {
   private:
     std::queue<std::string> queue_;
@@ -31,14 +31,14 @@ class TSLogger final
     {
         if (!max_log_messages_set_.exchange(true))
         {
-            TSLogger::getMaxLogMessages() = max_log_messages;
+            ThreadSafeLogger::getMaxLogMessages() = max_log_messages;
         }
     }
 
     // Private constructor to prevent instantiation
-    explicit TSLogger(std::uint32_t max_log_messages_within_buffer)
+    explicit ThreadSafeLogger(std::uint32_t max_log_messages_within_buffer)
         : max_log_messages_within_buffer_(max_log_messages_within_buffer), exit_(false),
-          worker_(std::thread(&TSLogger::processLogs, this))
+          worker_(std::thread(&ThreadSafeLogger::processLogs, this))
     {
     }
 
@@ -70,7 +70,7 @@ class TSLogger final
     }
 
   protected:
-    ~TSLogger()
+    ~ThreadSafeLogger()
     {
         exit_ = true;
         condition_.notify_one();
@@ -79,15 +79,15 @@ class TSLogger final
 
   public:
     // Delete the copy and move constructors and assignment operators
-    TSLogger(const TSLogger &) = delete;
-    TSLogger(TSLogger &&) noexcept = delete;
-    TSLogger &operator=(const TSLogger &) = delete;
-    TSLogger &operator=(TSLogger &&) noexcept = delete;
+    ThreadSafeLogger(const ThreadSafeLogger &) = delete;
+    ThreadSafeLogger(ThreadSafeLogger &&) noexcept = delete;
+    ThreadSafeLogger &operator=(const ThreadSafeLogger &) = delete;
+    ThreadSafeLogger &operator=(ThreadSafeLogger &&) noexcept = delete;
 
-    static TSLogger &getInstance(std::uint32_t max_log_messages)
+    static ThreadSafeLogger &getInstance(std::uint32_t max_log_messages)
     {
-        TSLogger::setMaxLogMessagesOnce(max_log_messages);
-        static TSLogger instance{getMaxLogMessages()};
+        ThreadSafeLogger::setMaxLogMessagesOnce(max_log_messages);
+        static ThreadSafeLogger instance{getMaxLogMessages()};
         return instance;
     }
 
@@ -111,5 +111,5 @@ class TSLogger final
     }
 };
 
-std::atomic_bool TSLogger::max_log_messages_set_ = false;
-} // namespace common_library
+std::atomic_bool ThreadSafeLogger::max_log_messages_set_ = false;
+} // namespace common_library::concurrency

@@ -2,10 +2,10 @@
 #include <cstdint>
 #include <vector>
 
-namespace common_library
+namespace common_library::concurrency
 {
 // Single Producer Single Consumer Queue
-template <typename T> class SPSCQueue final
+template <typename T> class SingleProducerSingleConsumerQueue final
 {
   private:
     std::vector<T> buffer_;
@@ -13,13 +13,13 @@ template <typename T> class SPSCQueue final
     const std::size_t capacity_;
 
   public:
-    explicit SPSCQueue(std::size_t size) : buffer_(size), head_(0), tail_(0), capacity_(size)
+    explicit SingleProducerSingleConsumerQueue(std::size_t size) : buffer_(size), head_(0), tail_(0), capacity_(size)
     {
     }
 
-    SPSCQueue() = delete;
-    SPSCQueue(const SPSCQueue &other) = delete;
-    SPSCQueue &operator=(const SPSCQueue &other) = delete;
+    SingleProducerSingleConsumerQueue() = delete;
+    SingleProducerSingleConsumerQueue(const SingleProducerSingleConsumerQueue &other) = delete;
+    SingleProducerSingleConsumerQueue &operator=(const SingleProducerSingleConsumerQueue &other) = delete;
 
     [[nodiscard]] bool push(const T &value) noexcept
     {
@@ -52,4 +52,4 @@ template <typename T> class SPSCQueue final
         return (idx + 1) % capacity_;
     }
 };
-} // namespace common_library
+} // namespace common_library::concurrency

@@ -1,7 +1,7 @@
 #include <atomic>
 #include <memory>
 
-namespace common_library
+namespace common_library::concurrency
 {
 template <typename T> class LockFreeQueue
 {
@@ -149,4 +149,4 @@ template <typename T> class LockFreeQueue
         return (head_.load(std::memory_order_relaxed)->next.load(std::memory_order_relaxed) == nullptr);
     }
 };
-} // namespace common_library
+} // namespace common_library::concurrency

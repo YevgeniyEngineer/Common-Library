@@ -1,5 +1,5 @@
-#include <concurrency/bs_queue.hpp>
-#include <concurrency/ts_logger.hpp>
+#include <common_library/concurrency/bounded_shared_queue.hpp>
+#include <common_library/concurrency/thread_safe_logger.hpp>
 
 #include <iostream>
 #include <limits>
@@ -9,7 +9,7 @@
 #include <thread>
 #include <vector>
 
-using LockFreeQueueSharedPtr = std::shared_ptr<common_library::BSQueue<int>>;
+using LockFreeQueueSharedPtr = std::shared_ptr<common_library::concurrency::BoundedSharedQueue<int>>;
 
 constexpr int TERMINATION_TOKEN = std::numeric_limits<int>::lowest();
 constexpr int NUM_CONSUMERS = 5;
@@ -17,7 +17,7 @@ constexpr int NUM_PRODUCERS = 1;
 
 std::atomic<int> number_of_active_producers = 0;
 
-auto &logger = common_library::TSLogger::getInstance(10'000);
+auto &logger = common_library::concurrency::ThreadSafeLogger::getInstance(10'000);
 
 void produce(LockFreeQueueSharedPtr queue)
 {
@@ -66,7 +66,8 @@ void consume(LockFreeQueueSharedPtr queue)
 
 int main()
 {
-    auto queue = std::make_shared<common_library::BSQueue<int>>(std::numeric_limits<std::size_t>::max());
+    auto queue =
+        std::make_shared<common_library::concurrency::BoundedSharedQueue<int>>(std::numeric_limits<std::size_t>::max());
 
     // Start a producer thread and multiple consumer threads.
     std::vector<std::thread> producer_threads;

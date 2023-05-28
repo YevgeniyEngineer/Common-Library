@@ -5,10 +5,10 @@
 #include <queue>
 #include <utility>
 
-namespace common_library
+namespace common_library::concurrency
 {
 // Thread Safe Queue
-template <typename T> class TSQueue final
+template <typename T> class ThreadSafeQueue final
 {
   private:
     std::queue<T> queue_;
@@ -16,15 +16,15 @@ template <typename T> class TSQueue final
     std::condition_variable cv_;
     std::atomic_bool destructing_{false};
 
-    TSQueue() = default;
-    TSQueue(const TSQueue &other) = delete;
+    ThreadSafeQueue() = default;
+    ThreadSafeQueue(const ThreadSafeQueue &other) = delete;
 
   public:
-    TSQueue &operator=(const TSQueue &other) = delete;
+    ThreadSafeQueue &operator=(const ThreadSafeQueue &other) = delete;
 
-    [[nodiscard]] static TSQueue<T> &getInstance()
+    [[nodiscard]] static ThreadSafeQueue<T> &getInstance()
     {
-        static TSQueue<T> instance;
+        static ThreadSafeQueue<T> instance;
         return instance;
     }
 
@@ -62,11 +62,11 @@ template <typename T> class TSQueue final
         return queue_.empty();
     }
 
-    ~TSQueue()
+    ~ThreadSafeQueue()
     {
         std::lock_guard<std::mutex> lock{mutex_};
         destructing_.store(true);
         cv_.notify_all();
     }
 };
-} // namespace common_library
+} // namespace common_library::concurrency
