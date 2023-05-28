@@ -1,3 +1,6 @@
+#ifndef COMMON_LIBRARY_CONCURRENCY_THREAD_SAFE_QUEUE
+#define COMMON_LIBRARY_CONCURRENCY_THREAD_SAFE_QUEUE
+
 #include <atomic>
 #include <condition_variable>
 #include <mutex>
@@ -70,3 +73,5 @@ template <typename T> class ThreadSafeQueue final
     }
 };
 } // namespace common_library::concurrency
+
+#endif // COMMON_LIBRARY_CONCURRENCY_THREAD_SAFE_QUEUE

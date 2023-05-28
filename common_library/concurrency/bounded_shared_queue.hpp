@@ -1,3 +1,6 @@
+#ifndef COMMON_LIBRARY_CONCURRENCY_BOUNDED_SHARED_QUEUE
+#define COMMON_LIBRARY_CONCURRENCY_BOUNDED_SHARED_QUEUE
+
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
@@ -159,3 +162,5 @@ template <typename T> class BoundedSharedQueue
     }
 };
 } // namespace common_library::concurrency
+
+#endif // COMMON_LIBRARY_CONCURRENCY_BOUNDED_SHARED_QUEUE

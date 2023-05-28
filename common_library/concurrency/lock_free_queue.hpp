@@ -1,3 +1,6 @@
+#ifndef COMMON_LIBRARY_CONCURRENCY_LOCK_FREE_QUEUE
+#define COMMON_LIBRARY_CONCURRENCY_LOCK_FREE_QUEUE
+
 #include <atomic>
 #include <memory>
 
@@ -150,3 +153,5 @@ template <typename T> class LockFreeQueue
     }
 };
 } // namespace common_library::concurrency
+
+#endif // COMMON_LIBRARY_CONCURRENCY_LOCK_FREE_QUEUE

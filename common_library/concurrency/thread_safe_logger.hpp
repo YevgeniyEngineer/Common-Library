@@ -1,3 +1,6 @@
+#ifndef COMMON_LIBRARY_CONCURRENCY_THREAD_SAFE_LOGGER
+#define COMMON_LIBRARY_CONCURRENCY_THREAD_SAFE_LOGGER
+
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
@@ -113,3 +116,5 @@ class ThreadSafeLogger final
 
 std::atomic_bool ThreadSafeLogger::max_log_messages_set_ = false;
 } // namespace common_library::concurrency
+
+#endif // COMMON_LIBRARY_CONCURRENCY_THREAD_SAFE_LOGGER

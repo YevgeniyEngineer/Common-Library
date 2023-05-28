@@ -1,3 +1,6 @@
+#ifndef COMMON_LIBRARY_CONCURRENCY_SINGLE_PRODUCER_SINGLE_CONSUMER_QUEUE
+#define COMMON_LIBRARY_CONCURRENCY_SINGLE_PRODUCER_SINGLE_CONSUMER_QUEUE
+
 #include <atomic>
 #include <cstdint>
 #include <vector>
@@ -53,3 +56,5 @@ template <typename T> class SingleProducerSingleConsumerQueue final
     }
 };
 } // namespace common_library::concurrency
+
+#endif // COMMON_LIBRARY_CONCURRENCY_SINGLE_PRODUCER_SINGLE_CONSUMER_QUEUE

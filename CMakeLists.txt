@@ -12,6 +12,8 @@ add_library(${PROJECT_NAME}
     common_library/concurrency/lock_free_queue.hpp
     common_library/concurrency/thread_safe_logger.hpp
     common_library/concurrency/bounded_shared_queue.hpp
+
+    common_library/containers/bounded_stack_vector.hpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -24,6 +26,7 @@ target_link_libraries(${PROJECT_NAME}
     -latomic
 )
 
+# Concurrency
 add_executable(example_single_producer_single_consumer_queue examples/single_producer_single_consumer_queue.cpp)
 target_link_libraries(example_single_producer_single_consumer_queue PRIVATE common_library)
 
@@ -35,3 +38,7 @@ target_link_libraries(example_lock_free_queue PRIVATE common_library)
 
 add_executable(example_bounded_shared_queue examples/bounded_shared_queue.cpp)
 target_link_libraries(example_bounded_shared_queue PRIVATE common_library)
+
+# Containers
+add_executable(example_bounded_stack_vector examples/bounded_stack_vector.cpp)
+target_link_libraries(example_bounded_stack_vector PRIVATE common_library)
