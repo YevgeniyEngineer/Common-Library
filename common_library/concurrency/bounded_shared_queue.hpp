@@ -103,7 +103,7 @@ template <typename T> class BoundedSharedQueue
     {
         std::unique_lock<std::mutex> lock{mutex_};
 
-        data_available_.wait(lock, [this]() { return queue_.empty() || shutdown_.load(std::memory_order_relaxed); });
+        data_available_.wait(lock, [this]() { return !queue_.empty() || shutdown_.load(std::memory_order_relaxed); });
 
         if (shutdown_.load(std::memory_order_relaxed))
         {
