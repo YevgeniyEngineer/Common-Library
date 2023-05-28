@@ -37,7 +37,7 @@ template <typename T> class BoundedSharedQueue
     std::atomic_bool shutdown_;
 
   public:
-    explicit BoundedSharedQueue(std::size_t max_size = std::numeric_limits<std::size_t>::max())
+    BoundedSharedQueue(std::size_t max_size = std::numeric_limits<std::size_t>::max())
         : max_size_(max_size), shutdown_(false)
     {
     }
@@ -141,11 +141,21 @@ template <typename T> class BoundedSharedQueue
     {
         const std::lock_guard<std::mutex> lock{mutex_};
 
-        if (shutdown_.load(std::memory_order_relaxed))
-        {
-            return true;
-        }
         return queue_.empty();
+    }
+
+    [[nodiscard]] bool full() const
+    {
+        const std::lock_guard<std::mutex> lock{mutex_};
+
+        return (queue_.size() == max_size_);
+    }
+
+    [[nodiscard]] std::size_t size() const
+    {
+        const std::lock_guard<std::mutex> lock{mutex_};
+
+        return queue_.size();
     }
 };
 } // namespace common_library::concurrency
