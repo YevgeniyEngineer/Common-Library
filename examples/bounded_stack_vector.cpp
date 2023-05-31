@@ -26,15 +26,15 @@ int main()
     // Check the size of the StackVector
     std::cout << "Size: " << vec.size() << std::endl;
 
-    // for (auto it = vec.cbegin(); it != vec.cend(); ++it)
-    // {
-    //     std::cout << *it << std::endl;
-    // }
+    for (auto it = vec.cbegin(); it != vec.cend(); ++it)
+    {
+        std::cout << *it << std::endl;
+    }
 
-    // for (auto it = vec.rbegin(); it != vec.rend(); ++it)
-    // {
-    //     std::cout << *it << std::endl;
-    // }
+    for (auto it = vec.rbegin(); it != vec.rend(); ++it)
+    {
+        std::cout << *it << std::endl;
+    }
 
     // Insert elements
     vec.insert(vec.begin() + 2, 42);
