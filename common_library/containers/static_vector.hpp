@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <initializer_list>
 #include <iterator>
+#include <memory>
+#include <new>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
@@ -18,7 +20,7 @@ template <typename T, std::size_t N> class StaticVector final
     {
     }
 
-    StaticVector(std::initializer_list<T> init)
+    StaticVector(std::initializer_list<T> init) : size_(0)
     {
         if (init.size() > N)
         {
@@ -27,7 +29,7 @@ template <typename T, std::size_t N> class StaticVector final
 
         for (auto &&item : init)
         {
-            new (data_ + size_) T(std::move(item));
+            ::new (&data_[size_]) T(std::move(item));
             ++size_;
         }
     }
@@ -44,7 +46,7 @@ template <typename T, std::size_t N> class StaticVector final
             throw std::out_of_range("StaticVector is full");
         }
 
-        new (data_ + size_) T(std::forward<Args>(args)...);
+        ::new (&data_[size_]) T(std::forward<Args>(args)...);
         ++size_;
     }
 
@@ -54,7 +56,7 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("StaticVector is full");
         }
-        new (data_ + size_) T(value);
+        ::new (&data_[size_]) T(value);
         ++size_;
     }
 
@@ -64,20 +66,17 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("StaticVector is full");
         }
-        new (data_ + size_) T(std::move(value));
+        ::new (&data_[size_]) T(std::move(value));
         ++size_;
     }
 
-    T pop_back()
+    void pop_back()
     {
         if (size_ == 0)
         {
             throw std::out_of_range("StaticVector is empty");
         }
-        T value = std::move((*this)[size_ - 1]);
-        reinterpret_cast<T *>(data_ + size_ - 1)->~T();
-        --size_;
-        return value;
+        std::destroy_at(std::launder(reinterpret_cast<T *>(&data_[--size_])));
     }
 
     T *insert(T *position, const T &value)
@@ -95,12 +94,12 @@ template <typename T, std::size_t N> class StaticVector final
         // Shift all elements to the right of position one step to the right
         for (T *ptr = end(); ptr != position; --ptr)
         {
-            new (ptr) T(std::move(*(ptr - 1))); // move construct at new location
-            (ptr - 1)->~T();                    // destroy element at old location
+            ::new (ptr) T(std::move(*(ptr - 1))); // move construct at new location
+            std::destroy_at(ptr - 1);             // destroy element at old location
         }
 
         // Copy-construct new value at position
-        new (position) T(value);
+        ::new (std::launder(position)) T(value);
 
         ++size_;
 
@@ -122,12 +121,12 @@ template <typename T, std::size_t N> class StaticVector final
         // Shift all elements to the right of position one step to the right
         for (T *ptr = end(); ptr != position; --ptr)
         {
-            new (ptr) T(std::move(*(ptr - 1))); // move construct at new location
-            (ptr - 1)->~T();                    // destroy element at old location
+            ::new (ptr) T(std::move(*(ptr - 1))); // move construct at new location
+            std::destroy_at(ptr - 1);             // destroy element at old location
         }
 
         // Move-construct new value at position
-        new (position) T(std::move(value));
+        ::new (std::launder(position)) T(std::move(value));
 
         ++size_;
 
@@ -140,7 +139,8 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("Index out of range");
         }
-        return *reinterpret_cast<T *>(data_ + index);
+
+        return *std::launder(reinterpret_cast<T *>(&data_[index]));
     }
 
     const T &operator[](std::size_t index) const
@@ -149,7 +149,7 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("Index out of range");
         }
-        return *reinterpret_cast<const T *>(data_ + index);
+        return *std::launder(reinterpret_cast<const T *>(&data_[index]));
     }
 
     constexpr std::size_t capacity() const noexcept
@@ -172,39 +172,39 @@ template <typename T, std::size_t N> class StaticVector final
         for (std::size_t i = 0; i < size_; ++i)
         {
             // Correctly call destructor for object of type T
-            reinterpret_cast<T *>(data_ + i)->~T();
+            std::destroy_at(std::launder(reinterpret_cast<T *>(&data_[i])));
         }
         size_ = 0;
     }
 
     T *begin()
     {
-        return reinterpret_cast<T *>(data_);
+        return std::launder(reinterpret_cast<T *>(&data_[0]));
     }
 
     const T *begin() const
     {
-        return reinterpret_cast<const T *>(data_);
+        return std::launder(reinterpret_cast<const T *>(&data_[0]));
     }
 
     const T *cbegin() const
     {
-        return reinterpret_cast<const T *>(data_);
+        return std::launder(reinterpret_cast<const T *>(&data_[0]));
     }
 
     T *end()
     {
-        return reinterpret_cast<T *>(data_) + size_;
+        return std::launder(reinterpret_cast<T *>(&data_[size_]));
     }
 
     const T *end() const
     {
-        return reinterpret_cast<const T *>(data_) + size_;
+        return std::launder(reinterpret_cast<const T *>(&data_[size_]));
     }
 
     const T *cend() const
     {
-        return reinterpret_cast<const T *>(data_) + size_;
+        return std::launder(reinterpret_cast<const T *>(&data_[size_]));
     }
 
     std::reverse_iterator<T *> rbegin()

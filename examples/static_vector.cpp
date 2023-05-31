@@ -87,10 +87,24 @@ int main()
         std::cout << "Error: " << e.what() << std::endl;
     }
 
+    // Test forward iterator
+    std::cout << "Testing forward iterator " << std::endl;
+    for (auto it = vec.begin(); it != vec.end(); ++it)
+    {
+        std::cout << it->value() << std::endl;
+    }
+
+    std::cout << "Testing reverse iterator " << std::endl;
+    for (auto it = vec.rbegin(); it != vec.rend(); ++it)
+    {
+        std::cout << it->value() << std::endl;
+    }
+
     // Pop elements from the vector
     while (!vec.empty())
     {
-        std::cout << "Popping: " << vec.pop_back().value() << '\n';
+        std::cout << "Popping" << std::endl;
+        vec.pop_back();
     }
 
     return 0;
