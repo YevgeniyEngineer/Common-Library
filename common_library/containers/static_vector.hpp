@@ -243,8 +243,7 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("StaticVector is empty");
         }
-
-        return *reinterpret_cast<T *>(data_);
+        return *std::launder(reinterpret_cast<T *>(&data_[0]));
     }
 
     const T &front() const
@@ -253,8 +252,7 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("StaticVector is empty");
         }
-
-        return *reinterpret_cast<const T *>(data_);
+        return *std::launder(reinterpret_cast<const T *>(&data_[0]));
     }
 
     T &back()
@@ -263,8 +261,7 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("StaticVector is empty");
         }
-
-        return *reinterpret_cast<T *>(data_ + size_ - 1);
+        return *std::launder(reinterpret_cast<T *>(&data_[size_ - 1]));
     }
 
     const T &back() const
@@ -273,8 +270,7 @@ template <typename T, std::size_t N> class StaticVector final
         {
             throw std::out_of_range("StaticVector is empty");
         }
-
-        return *reinterpret_cast<const T *>(data_ + size_ - 1);
+        return *std::launder(reinterpret_cast<const T *>(&data_[size_ - 1]));
     }
 
   private:
