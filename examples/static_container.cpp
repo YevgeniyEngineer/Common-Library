@@ -90,5 +90,22 @@ int main()
         std::cout << ex.what() << std::endl;
     }
 
+    // Print the front element
+    std::cout << "Front: " << planes.front() << std::endl;
+
+    // Print the back element
+    std::cout << "Back: " << planes.back() << std::endl;
+
+    // Print max size
+    std::cout << "Max Size: " << planes.max_size() << std::endl;
+
+    // Print size
+    std::cout << "Size: " << planes.size() << std::endl;
+
+    // Reset
+    planes.reset();
+
+    std::cout << "Size after reset: " << planes.size() << std::endl;
+
     return 0;
 }

@@ -94,7 +94,7 @@ template <typename T, std::size_t N> class StaticContainer
             return (*this);
         }
 
-        difference_type operator-(const Iterator &other) const noexcept
+        difference_type operator-(const Iterator &other) noexcept
         {
             return (data_ptr_ - other.data_ptr_);
         }
@@ -216,6 +216,11 @@ template <typename T, std::size_t N> class StaticContainer
         size_ = new_size;
     }
 
+    void reset() noexcept
+    {
+        size_ = 0U;
+    }
+
     std::size_t size() const noexcept
     {
         return size_;
@@ -252,6 +257,26 @@ template <typename T, std::size_t N> class StaticContainer
             StaticVectorIndexOutOfRangeException();
         }
         return data_[index];
+    }
+
+    T &front()
+    {
+        return at(0);
+    }
+
+    const T &front() const
+    {
+        return at(0);
+    }
+
+    T &back()
+    {
+        return at(size_ - 1);
+    }
+
+    const T &back() const
+    {
+        return at(size_ - 1);
     }
 
   private:
