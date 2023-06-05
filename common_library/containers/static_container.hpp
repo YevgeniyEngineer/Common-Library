@@ -243,40 +243,56 @@ template <typename T, std::size_t N> class StaticContainer
 
     T &at(const std::size_t index)
     {
-        if (index > N)
+        if ((index > N) || (size_ == 0))
         {
-            StaticVectorIndexOutOfRangeException();
+            throw StaticVectorIndexOutOfRangeException();
         }
         return data_[index];
     }
 
     const T &at(const std::size_t index) const
     {
-        if (index > N)
+        if ((index > N) || (size_ == 0))
         {
-            StaticVectorIndexOutOfRangeException();
+            throw StaticVectorIndexOutOfRangeException();
         }
         return data_[index];
     }
 
     T &front()
     {
-        return at(0);
+        if (size_ == 0U)
+        {
+            throw StaticVectorIndexOutOfRangeException();
+        }
+        return data_[0U];
     }
 
     const T &front() const
     {
-        return at(0);
+        if (size_ == 0U)
+        {
+            throw StaticVectorIndexOutOfRangeException();
+        }
+        return data_[0U];
     }
 
     T &back()
     {
-        return at(size_ - 1);
+        if (size_ == 0U)
+        {
+            throw StaticVectorIndexOutOfRangeException();
+        }
+        return data_[size_ - 1];
     }
 
     const T &back() const
     {
-        return at(size_ - 1);
+        if (size_ == 0U)
+        {
+            throw StaticVectorIndexOutOfRangeException();
+        }
+        return data_[size_ - 1];
     }
 
   private:

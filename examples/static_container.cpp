@@ -107,5 +107,23 @@ int main()
 
     std::cout << "Size after reset: " << planes.size() << std::endl;
 
+    try
+    {
+        const auto &front = planes.front();
+    }
+    catch (const StaticVectorIndexOutOfRangeException &ex)
+    {
+        std::cout << ex.what() << std::endl;
+    }
+
+    try
+    {
+        const auto &back = planes.back();
+    }
+    catch (const StaticVectorIndexOutOfRangeException &ex)
+    {
+        std::cout << ex.what() << std::endl;
+    }
+
     return 0;
 }
