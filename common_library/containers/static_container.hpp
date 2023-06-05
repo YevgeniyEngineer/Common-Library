@@ -47,9 +47,7 @@ template <typename T, std::size_t N> class StaticContainer
         {
         }
 
-        Iterator() noexcept : data_ptr_(nullptr)
-        {
-        }
+        Iterator() = delete;
 
         ~Iterator()
         {
