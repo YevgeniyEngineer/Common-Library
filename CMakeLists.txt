@@ -15,6 +15,7 @@ add_library(${PROJECT_NAME}
 
     common_library/containers/bounded_stack_vector.hpp
     common_library/containers/static_vector.hpp
+    common_library/containers/static_container.hpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -46,3 +47,6 @@ target_link_libraries(example_bounded_stack_vector PRIVATE common_library)
 
 add_executable(example_static_vector examples/static_vector.cpp)
 target_link_libraries(example_static_vector PRIVATE common_library)
+
+add_executable(example_static_container examples/static_container.cpp)
+target_link_libraries(example_static_container PRIVATE common_library)
