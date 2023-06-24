@@ -5,6 +5,10 @@
 class NonTrivialType
 {
   public:
+    NonTrivialType() : value_(nullptr)
+    {
+    }
+
     NonTrivialType(int value) : value_(new int(value))
     {
     }
@@ -58,10 +62,12 @@ int main()
     // Create a StaticVector of NonTrivialType
     common_library::containers::StaticVector<NonTrivialType, 5> vec;
 
+    std::cout << "Capacity: " << vec.capacity() << std::endl;
+
     // Add elements to the vector
     vec.push_back(NonTrivialType(1));
     vec.push_back(NonTrivialType(2));
-    vec.push_back(NonTrivialType(3));
+    vec.emplace_back(3);
 
     // Print the size of the vector
     std::cout << "Size: " << vec.size() << std::endl;
@@ -86,19 +92,53 @@ int main()
     {
         std::cout << "Error: " << e.what() << std::endl;
     }
+    catch (const std::exception &e)
+    {
+        std::cout << "Exception: " << e.what() << std::endl;
+    }
 
     // Test forward iterator
-    std::cout << "Testing forward iterator " << std::endl;
+    std::cout << std::endl << "Testing forward iterator " << std::endl;
     for (auto it = vec.begin(); it != vec.end(); ++it)
     {
-        std::cout << it->value() << std::endl;
+        std::cout << it->value() << " ";
     }
 
-    std::cout << "Testing reverse iterator " << std::endl;
+    std::cout << std::endl << "Testing constant forward iterator " << std::endl;
+    for (auto it = vec.cbegin(); it != vec.cend(); ++it)
+    {
+        std::cout << it->value() << " ";
+    }
+
+    std::cout << std::endl << "Testing reverse iterator " << std::endl;
     for (auto it = vec.rbegin(); it != vec.rend(); ++it)
     {
-        std::cout << it->value() << std::endl;
+        std::cout << it->value() << " ";
     }
+
+    std::cout << std::endl << "Testing constant reverse iterator " << std::endl;
+    for (auto it = vec.crbegin(); it != vec.crend(); ++it)
+    {
+        std::cout << it->value() << " ";
+    }
+
+    std::cout << std::endl << "Testing random access iterator " << std::endl;
+    std::cout << (vec.begin() + 0)->value() << " ";
+    std::cout << (vec.begin() + 1)->value() << " ";
+    std::cout << (vec.begin() + 2)->value() << " ";
+    std::cout << (vec.begin() + 3)->value() << " ";
+    std::cout << (vec.begin() + 4)->value() << std::endl;
+
+    try
+    {
+        std::cout << (vec.begin() + 5)->value() << " ";
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "Exception: " << e.what() << std::endl;
+    }
+
+    std::cout << std::endl;
 
     // Pop elements from the vector
     while (!vec.empty())
