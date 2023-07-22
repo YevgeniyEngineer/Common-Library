@@ -16,6 +16,7 @@ add_library(${PROJECT_NAME}
     common_library/containers/bounded_stack_vector.hpp
     common_library/containers/static_vector.hpp
     common_library/containers/static_container.hpp
+    common_library/containers/bounded_dynamic_array.hpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -50,3 +51,6 @@ target_link_libraries(example_static_vector PRIVATE common_library)
 
 add_executable(example_static_container examples/static_container.cpp)
 target_link_libraries(example_static_container PRIVATE common_library)
+
+add_executable(example_bounded_dynamic_array examples/bounded_dynamic_array.cpp)
+target_link_libraries(example_bounded_dynamic_array PRIVATE common_library)
